@@ -3,6 +3,7 @@ import {
   Boxes, ClipboardList, DollarSign, MessageCircle, PackageSearch, Plus, Settings, ShoppingBag, UsersRound,
 } from 'lucide-react';
 import { dashboardService } from '@/services';
+import { ApiClientError } from '@/lib/api/errors';
 
 const statusLabels: Record<string, string> = {
   SUBMITTED: 'جديد', CONFIRMED: 'مؤكد', PREPARING: 'قيد التجهيز', READY: 'جاهز', COMPLETED: 'تم التسليم', CANCELLED: 'ملغي',
@@ -15,18 +16,21 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   let stats: Awaited<ReturnType<typeof dashboardService.getStats>> | null = null;
   let conversations: Awaited<ReturnType<typeof dashboardService.listConversations>> = [];
   let dbError = false;
+  let errorMessage = 'لم نتمكن من قراءة البيانات. تحقق من اتصال API أو قاعدة التطوير.';
   try {
-    stats = dashboardService.getStats(days);
-    conversations = dashboardService.listConversations(true);
-  } catch {
+    stats = await dashboardService.getStats(days);
+    conversations = await dashboardService.listConversations(true);
+  } catch (error) {
     dbError = true;
+    if (error instanceof ApiClientError) errorMessage = error.message;
   }
 
   if (dbError || !stats) {
     return (
       <div className="admin-empty" role="alert">
         <h2>تعذر تحميل لوحة البيانات</h2>
-        <p>لم نتمكن من قراءة قاعدة البيانات المحلية. جرّب تشغيل <code dir="ltr">npm run db:init</code> ثم <code dir="ltr">npm run db:seed</code> وأعد تحميل الصفحة.</p>
+        <p>{errorMessage}</p>
+        <Link href="/" className="admin-btn">إعادة المحاولة</Link>
       </div>
     );
   }
@@ -44,7 +48,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       <section className="admin-hero">
         <span className="admin-hero-eyebrow" dir="ltr">AL NAEEM ADMIN</span>
         <h1>مرحباً بك مجدداً 👋</h1>
-        <p>إليك نظرة سريعة على أداء متجرك — بيانات التطوير من SQLite المحلي.</p>
+        <p>إليك نظرة سريعة على أداء متجرك.</p>
       </section>
 
       <div className="admin-kpi-grid">

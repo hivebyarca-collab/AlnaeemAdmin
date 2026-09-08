@@ -1,9 +1,15 @@
+import { getDataAdapter } from '@/lib/config/env';
+import { apiOrderRepository } from './adapters/api/order.repository';
 import { sqliteOrderRepository } from './adapters/sqlite/order.repository';
 import type { OrderRepository } from './repositories/order.repository';
 import type { OrderFilters, OrderStatus } from '@/types';
 
+function resolveOrderRepository(): OrderRepository {
+  return getDataAdapter() === 'api' ? apiOrderRepository : sqliteOrderRepository;
+}
+
 export class OrderService {
-  constructor(private readonly repository: OrderRepository) {}
+  constructor(private readonly repository: OrderRepository = resolveOrderRepository()) {}
 
   listOrders(filters?: OrderFilters) {
     return this.repository.list(filters);
@@ -29,4 +35,4 @@ export class OrderService {
   }
 }
 
-export const orderService = new OrderService(sqliteOrderRepository);
+export const orderService = new OrderService();

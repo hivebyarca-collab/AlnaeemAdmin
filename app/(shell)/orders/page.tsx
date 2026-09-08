@@ -29,8 +29,8 @@ export default async function OrdersPage({ searchParams }: { searchParams: Searc
   let counts: Awaited<ReturnType<typeof orderService.getOrderCounts>> | null = null;
   let dbError = false;
   try {
-    data = orderService.listOrders({ source, status: filters.status, payment: filters.payment, query: filters.q, page: Number(filters.page ?? 1) || 1, pageSize: 10 });
-    counts = orderService.getOrderCounts();
+    data = await orderService.listOrders({ source, status: filters.status, payment: filters.payment, query: filters.q, page: Number(filters.page ?? 1) || 1, pageSize: 10 });
+    counts = await orderService.getOrderCounts();
   } catch {
     dbError = true;
   }

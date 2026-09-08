@@ -520,3 +520,48 @@ dialog.drawer-panel.drawer-panel--right { left: auto; right: 0; }
   .admin-candidate .admin-candidate-use { min-height: 32px; display: inline-flex; align-items: center; }
   .admin-cropper-zoom { min-height: 44px; }
 }
+
+/* ---- Login ---- */
+.admin-login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
+    var(--canvas);
+}
+.admin-login-card {
+  width: min(420px, 100%);
+  display: grid;
+  gap: 14px;
+  padding: 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-raised) 92%, transparent);
+  box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+}
+.admin-login-card h1 { margin: 0; font-size: 1.6rem; }
+.admin-login-card > p { margin: 0; color: var(--text-secondary); font-size: .88rem; }
+.admin-login-form { display: grid; gap: 12px; }
+.admin-login-form label { display: grid; gap: 6px; font-size: .82rem; color: var(--text-secondary); }
+.admin-login-form input {
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+.admin-logout {
+  margin: auto 12px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.admin-logout:hover { color: var(--text); border-color: var(--border-strong); }

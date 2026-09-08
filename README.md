@@ -14,16 +14,39 @@ Production admin application for AL NAEEM Gaming Store.
 - Node.js 22.13+
 - npm
 
-## Setup
+## Setup (API mode — preferred)
+
+Requires AL NAEEM API running at `http://localhost:4000` with PostgreSQL ready.
 
 ```bash
 npm install
 copy .env.example .env.local   # Windows
+```
+
+`.env.local` for local API integration:
+
+```env
+DATA_ADAPTER=api
+API_BASE_URL=http://localhost:4000/api/v1
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000/api/v1
+ADMIN_DEV_BYPASS=false
+```
+
+Create an API owner admin in the API repo (`npm run admin:create`), then open the Admin login page.
+
+## SQLite fallback (local only)
+
+```env
+DATA_ADAPTER=sqlite
+ADMIN_DEV_BYPASS=true
+```
+
+```bash
 npm run db:init
 npm run db:seed
 ```
 
-Set `ADMIN_DEV_BYPASS=true` in `.env.local` for local development without cookie auth.
+Never use SQLite or `ADMIN_DEV_BYPASS` in production. API failures must not fall back to SQLite.
 
 ## Development
 
@@ -31,7 +54,7 @@ Set `ADMIN_DEV_BYPASS=true` in `.env.local` for local development without cookie
 npm run dev
 ```
 
-Open: **http://localhost:3001**
+Open: **http://localhost:3001** → `/login` when `DATA_ADAPTER=api`.
 
 ## Quality
 
@@ -46,7 +69,15 @@ npm run build
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — layers, routing, data strategy
 - [ADMIN_SYSTEM.md](./ADMIN_SYSTEM.md) — module status
 - [DECISIONS.md](./DECISIONS.md) — frozen technical decisions
+- Backend contract: `AlNaeem API/ADMIN_INTEGRATION.md`
 
-## Future Backend
+## Production env (Admin only)
 
-Replace SQLite adapter with HTTP adapter pointing to `al-naeem-api`. UI and routes remain unchanged.
+```env
+DATA_ADAPTER=api
+API_BASE_URL=https://api.<DOMAIN>/api/v1
+NEXT_PUBLIC_API_BASE_URL=https://api.<DOMAIN>/api/v1
+ADMIN_DEV_BYPASS=false
+```
+
+Do not set `DATABASE_URL` or auth signing secrets in the Admin app — those belong to the API.

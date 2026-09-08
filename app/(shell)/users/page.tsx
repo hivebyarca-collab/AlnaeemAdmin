@@ -4,8 +4,8 @@ import { settingsService } from '@/services';
 
 export const metadata = { title: 'المستخدمون' };
 
-export default function UsersPage() {
-  const users = settingsService.getAdminUsers();
+export default async function UsersPage() {
+  const users = await settingsService.getAdminUsers();
   return (
     <div className="admin-page-body">
       <PageHeader title="المستخدمون والصلاحيات" description="عرض حسابات الإدارة — إدارة CRUD/RBAC تتطلب al-naeem-api" emoji="🔐" />

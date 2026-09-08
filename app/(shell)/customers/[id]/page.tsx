@@ -8,7 +8,7 @@ export const metadata = { title: 'ملف العميل' };
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const detail = customerService.getCustomerDetail(id);
+  const detail = await customerService.getCustomerDetail(id);
   if (!detail) notFound();
   const { user, orders, conversation, messages: rawMessages, totalSpentUsd, addresses } = detail;
   const messages = rawMessages as { id: string; direction: string; sender_type: string; body: string; created_at: string }[];

@@ -12,11 +12,11 @@ export type ProductListResult = {
 };
 
 export interface ProductRepository {
-  list(filters?: AdminProductFilters): ProductListResult;
-  getById(id: string): Product | undefined;
-  getBySku(sku: string): Product | undefined;
-  create(input: ProductInput): Product;
-  update(id: string, changes: Partial<ProductInput>): Product | undefined;
+  list(filters?: AdminProductFilters): Promise<ProductListResult>;
+  getById(id: string): Promise<Product | undefined>;
+  getBySku(sku: string): Promise<Product | undefined>;
+  create(input: ProductInput): Promise<Product>;
+  update(id: string, changes: Partial<ProductInput>): Promise<Product | undefined>;
   updateExtended(
     id: string,
     extended: {
@@ -28,7 +28,7 @@ export interface ProductRepository {
       image_width?: number | null;
       image_height?: number | null;
     },
-  ): void;
-  delete(id: string): boolean;
-  getLowStock(): Product[];
+  ): Promise<void>;
+  delete(id: string): Promise<boolean>;
+  getLowStock(): Promise<Product[]>;
 }

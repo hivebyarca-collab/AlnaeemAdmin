@@ -7,9 +7,9 @@ import { isAgentConfigured } from '@/lib/services/ai-agent';
 
 export const metadata = { title: 'الإعدادات' };
 
-export default function SettingsPage() {
-  const settings = settingsService.getAll();
-  const users = settingsService.getAdminUsers();
+export default async function SettingsPage() {
+  const settings = await settingsService.getAll();
+  const users = await settingsService.getAdminUsers();
   const whatsapp = getWhatsAppConfig();
 
   const serviceStatus = [

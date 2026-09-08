@@ -8,9 +8,11 @@ import {
 import type { CustomerRepository } from '../../repositories/customer.repository';
 
 export const sqliteCustomerRepository: CustomerRepository = {
-  list: listClients,
-  getDetail: (id) => getClientDetail(id) as import('@/types').CustomerDetail | undefined,
-  update: updateClient,
-  anonymize: anonymizeClient,
+  list: async (query) => listClients(query),
+  getDetail: async (id) => getClientDetail(id) as Awaited<ReturnType<CustomerRepository['getDetail']>>,
+  update: async (id, changes) => updateClient(id, changes),
+  anonymize: async (id) => {
+    anonymizeClient(id);
+  },
   normalizePhone,
 };

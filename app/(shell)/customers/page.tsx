@@ -11,12 +11,12 @@ export default async function CustomersPage({ searchParams }: { searchParams: Se
   let customers: Awaited<ReturnType<typeof customerService.listCustomers>> = [];
   let dbError = false;
   try {
-    customers = customerService.listCustomers(q);
+    customers = await customerService.listCustomers(q);
   } catch {
     dbError = true;
   }
   if (dbError) return <div className="admin-empty" role="alert"><h2>تعذر تحميل العملاء</h2></div>;
-  const settings = settingsService.getAll();
+  const settings = await settingsService.getAll();
   const whatsappConfigured = Boolean(settings.whatsapp_connected_number);
   const highlighted = phone ? customers.filter((customer) => customer.phone === phone) : customers;
 

@@ -1,9 +1,15 @@
-import type { AdminProductFilters, ProductInput } from '@/types';
+import { getDataAdapter } from '@/lib/config/env';
+import { apiProductRepository } from './adapters/api/product.repository';
 import { sqliteProductRepository } from './adapters/sqlite/product.repository';
 import type { ProductRepository } from './repositories/product.repository';
+import type { AdminProductFilters, ProductInput } from '@/types';
+
+function resolveProductRepository(): ProductRepository {
+  return getDataAdapter() === 'api' ? apiProductRepository : sqliteProductRepository;
+}
 
 export class ProductService {
-  constructor(private readonly repository: ProductRepository) {}
+  constructor(private readonly repository: ProductRepository = resolveProductRepository()) {}
 
   listProducts(filters?: AdminProductFilters) {
     return this.repository.list(filters);
@@ -41,4 +47,4 @@ export class ProductService {
   }
 }
 
-export const productService = new ProductService(sqliteProductRepository);
+export const productService = new ProductService();

@@ -1,8 +1,8 @@
 import type { CustomerDetail, CustomerRow } from '@/types';
 
 export interface CustomerRepository {
-  list(query?: string): CustomerRow[];
-  getDetail(id: string): CustomerDetail | undefined;
+  list(query?: string): Promise<CustomerRow[]>;
+  getDetail(id: string): Promise<CustomerDetail | undefined>;
   update(
     id: string,
     changes: {
@@ -12,7 +12,7 @@ export interface CustomerRepository {
       notes?: string | null;
       is_disabled?: number;
     },
-  ): boolean;
-  anonymize(id: string): void;
+  ): Promise<boolean>;
+  anonymize(id: string): Promise<void>;
   normalizePhone(phone: string): string;
 }

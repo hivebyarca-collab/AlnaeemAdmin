@@ -1,3 +1,11 @@
+import { getDataAdapter } from '@/lib/config/env';
+import {
+  apiCatalogRepository,
+  apiConversationRepository,
+  apiDashboardRepository,
+  apiInventoryRepository,
+  apiSettingsRepository,
+} from './adapters/api/catalog.repository';
 import {
   sqliteCatalogRepository,
   sqliteConversationRepository,
@@ -6,11 +14,13 @@ import {
   sqliteSettingsRepository,
 } from './adapters/sqlite/catalog.repository';
 
-export const catalogService = sqliteCatalogRepository;
-export const dashboardService = sqliteDashboardRepository;
-export const settingsService = sqliteSettingsRepository;
-export const inventoryService = sqliteInventoryRepository;
-export const conversationService = sqliteConversationRepository;
+const useApi = getDataAdapter() === 'api';
+
+export const catalogService = useApi ? apiCatalogRepository : sqliteCatalogRepository;
+export const dashboardService = useApi ? apiDashboardRepository : sqliteDashboardRepository;
+export const settingsService = useApi ? apiSettingsRepository : sqliteSettingsRepository;
+export const inventoryService = useApi ? apiInventoryRepository : sqliteInventoryRepository;
+export const conversationService = useApi ? apiConversationRepository : sqliteConversationRepository;
 
 export { productService } from './product.service';
 export { orderService } from './order.service';

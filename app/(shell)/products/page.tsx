@@ -16,13 +16,13 @@ export default async function ProductListPage({ searchParams }: { searchParams: 
   let brands: Awaited<ReturnType<typeof catalogService.getBrands>> = [];
   let dbError = false;
   try {
-    data = productService.listProducts({
+    data = await productService.listProducts({
       query: filters.q, category: filters.category, brand: filters.brand,
       stock: filters.stock as 'in' | 'low' | 'out' | undefined, active: filters.active as 'active' | 'hidden' | undefined,
       page: Number(filters.page ?? 1) || 1, pageSize: 10,
     });
-    categories = catalogService.getCategories();
-    brands = catalogService.getBrands();
+    categories = await catalogService.getCategories();
+    brands = await catalogService.getBrands();
   } catch {
     dbError = true;
   }

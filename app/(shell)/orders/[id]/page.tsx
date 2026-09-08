@@ -17,7 +17,7 @@ type OrderDetail = {
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const order = orderService.getOrder(id) as OrderDetail | undefined;
+  const order = (await orderService.getOrder(id)) as OrderDetail | undefined;
   if (!order) notFound();
 
   return (

@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { Bell, Headphones, Menu, Search, X } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { Bell, Headphones, LogOut, Menu, Search, X } from 'lucide-react';
 import { adminNavigation, isNavActive } from '@/config/admin-navigation';
+import { logoutAction } from '@/lib/auth-actions';
 
 export function AdminShell({ children, dateLabel }: { children: React.ReactNode; dateLabel: string }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [loggingOut, startLogout] = useTransition();
 
   return (
     <div className="admin-page">
@@ -41,6 +43,15 @@ export function AdminShell({ children, dateLabel }: { children: React.ReactNode;
             </div>
           ))}
         </nav>
+        <button
+          type="button"
+          className="admin-logout"
+          disabled={loggingOut}
+          onClick={() => startLogout(() => { void logoutAction(); })}
+        >
+          <LogOut aria-hidden="true" />
+          <span>{loggingOut ? 'جاري الخروج...' : 'تسجيل الخروج'}</span>
+        </button>
       </aside>
 
       <div className="admin-content">

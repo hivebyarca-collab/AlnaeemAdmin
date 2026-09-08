@@ -15,9 +15,9 @@ export type OrderCounts = {
 };
 
 export interface OrderRepository {
-  list(filters?: OrderFilters): OrderListResult;
-  getById(id: string): OrderRow | undefined;
-  getCounts(): OrderCounts;
+  list(filters?: OrderFilters): Promise<OrderListResult>;
+  getById(id: string): Promise<OrderRow | undefined>;
+  getCounts(): Promise<OrderCounts>;
   updateAdmin(
     id: string,
     changes: {
@@ -25,5 +25,5 @@ export interface OrderRepository {
       payment_status?: 'unpaid' | 'paid' | 'refunded';
       notes?: string;
     },
-  ): boolean;
+  ): Promise<boolean>;
 }

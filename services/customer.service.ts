@@ -1,8 +1,14 @@
+import { getDataAdapter } from '@/lib/config/env';
+import { apiCustomerRepository } from './adapters/api/customer.repository';
 import { sqliteCustomerRepository } from './adapters/sqlite/customer.repository';
 import type { CustomerRepository } from './repositories/customer.repository';
 
+function resolveCustomerRepository(): CustomerRepository {
+  return getDataAdapter() === 'api' ? apiCustomerRepository : sqliteCustomerRepository;
+}
+
 export class CustomerService {
-  constructor(private readonly repository: CustomerRepository) {}
+  constructor(private readonly repository: CustomerRepository = resolveCustomerRepository()) {}
 
   listCustomers(query?: string) {
     return this.repository.list(query);
@@ -39,4 +45,4 @@ export class CustomerService {
   }
 }
 
-export const customerService = new CustomerService(sqliteCustomerRepository);
+export const customerService = new CustomerService();
