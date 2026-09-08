@@ -7,7 +7,7 @@
  * application repository. Secrets never reach the browser.
  */
 import {
-  getProducts, getProduct, listAdminProducts, getProductPriceSyp, getSettings,
+  getProduct, listAdminProducts, getProductPriceSyp, getSettings,
   getConversationById, insertMessage, setConversationFlags, type Product,
 } from '@/lib/database';
 
@@ -43,7 +43,7 @@ export const agentTools = {
     return { usd: product.price_usd, syp: getProductPriceSyp(product) };
   },
   getStorefrontProducts(): Product[] {
-    return getProducts().filter((product) => product.is_active === 1).slice(0, 20);
+    return listAdminProducts({ active: 'active', pageSize: 20 }).rows;
   },
   handoffToAdmin(conversationId: string, reason: string) {
     setConversationFlags(conversationId, { needs_admin: true, ai_paused: true });

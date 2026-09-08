@@ -3,26 +3,26 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Loader2, Plus, Save } from 'lucide-react';
-import { saveProduct, type ProductFormValues, type ActionResult } from '@/app/admin/actions';
+import { saveProduct, type ProductFormValues, type ActionResult } from '@/app/actions';
 import { ProductImagePicker, type PickedImage } from './product-image-picker';
 import { BarcodeGenerator } from './barcode-generator';
 
 export type ProductFormInitial = Partial<ProductFormValues> & { id?: string; category?: string };
-
-const categoryOptions = [
-  { id: 'cpu', label: 'المعالجات' }, { id: 'motherboard', label: 'اللوحات الأم' }, { id: 'gpu', label: 'البطاقات الرسومية' },
-  { id: 'ram', label: 'الذاكرة' }, { id: 'storage', label: 'التخزين' }, { id: 'psu', label: 'مزودات الطاقة' },
-  { id: 'case', label: 'الصناديق' }, { id: 'cooler', label: 'التبريد' }, { id: 'monitor', label: 'الشاشات' },
-  { id: 'keyboard', label: 'لوحات المفاتيح' }, { id: 'mouse', label: 'الفأرات' }, { id: 'headset', label: 'سماعات الرأس' },
-  { id: 'console', label: 'أجهزة الألعاب' }, { id: 'game', label: 'الألعاب' }, { id: 'accessory', label: 'الإكسسوارات' },
-];
 
 const emptyValues = {
   name: '', brand: '', model: '', sku: '', category: '', price: '', costPrice: '',
   quantity: '0', lowStockThreshold: '2', description: '', isActive: true,
 };
 
-export function ProductForm({ initial }: { initial: ProductFormInitial }) {
+export function ProductForm({
+  initial,
+  categories = [],
+  brands = [],
+}: {
+  initial: ProductFormInitial;
+  categories?: { id: string; label: string }[];
+  brands?: { id: string; name: string }[];
+}) {
   const router = useRouter();
   const [values, setValues] = useState({ ...emptyValues, ...initial, isActive: initial.isActive ?? true });
   const [image, setImage] = useState<PickedImage | null>(
@@ -51,7 +51,7 @@ export function ProductForm({ initial }: { initial: ProductFormInitial }) {
       setSaving(false);
       if (!result.ok) { setFeedback({ ok: false, error: result.error }); return; }
       if (then === 'list') {
-        router.push('/admin/products');
+        router.push('/products');
       } else {
         setValues({ ...emptyValues });
         setImage(null);
@@ -76,7 +76,7 @@ export function ProductForm({ initial }: { initial: ProductFormInitial }) {
             productName={values.name}
             brand={values.brand}
             model={values.model}
-            category={categoryOptions.find((option) => option.id === values.category)?.label ?? ''}
+            category={categories.find((option) => option.id === values.category)?.label ?? ''}
             onChange={setImage}
           />
         </section>
@@ -86,15 +86,20 @@ export function ProductForm({ initial }: { initial: ProductFormInitial }) {
             <header className="admin-panel-title"><h2>تفاصيل المنتج الأساسية</h2><small>أدخل المعلومات الأساسية للمنتج</small></header>
             <div className="admin-field-grid">
               <label>اسم المنتج <b>*</b><input required value={values.name} onChange={(event) => setValues({ ...values, name: event.target.value })} /></label>
-              <label>العلامة التجارية <b>*</b><input required value={values.brand} onChange={(event) => setValues({ ...values, brand: event.target.value })} placeholder="ASUS" /></label>
-              <label>رقم الموديل<input dir="ltr" value={values.model} onChange={(event) => setValues({ ...values, model: event.target.value })} placeholder="ROG-STRIX-RTX4070-O12G-GAMING" /></label>
               <label>رمز المنتج SKU <b>*</b><input dir="ltr" required value={values.sku} onChange={(event) => setValues({ ...values, sku: event.target.value })} placeholder="ASUS-RTX4070-001" /></label>
               <label>التصنيف <b>*</b>
                 <select required value={values.category} onChange={(event) => setValues({ ...values, category: event.target.value })}>
                   <option value="">اختر التصنيف</option>
-                  {categoryOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+                  {categories.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
                 </select>
               </label>
+              <label>العلامة التجارية <b>*</b>
+                <select required value={values.brand} onChange={(event) => setValues({ ...values, brand: event.target.value })}>
+                  <option value="">اختر العلامة</option>
+                  {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
+                </select>
+              </label>
+              <label>رقم الموديل<input dir="ltr" value={values.model} onChange={(event) => setValues({ ...values, model: event.target.value })} placeholder="ROG-STRIX-RTX4070-O12G-GAMING" /></label>
               <label>السعر (دولار) <b>*</b><input dir="ltr" required type="number" min="0" step="0.01" value={values.price} onChange={(event) => setValues({ ...values, price: event.target.value })} /></label>
               <label>سعر التكلفة (اختياري)<input dir="ltr" type="number" min="0" step="0.01" value={values.costPrice} onChange={(event) => setValues({ ...values, costPrice: event.target.value })} /></label>
               <label>الكمية المتوفرة <b>*</b><input dir="ltr" required type="number" min="0" value={values.quantity} onChange={(event) => setValues({ ...values, quantity: event.target.value })} /></label>

@@ -1,29 +1,29 @@
 # AL NAEEM Admin
 
-Independent admin application extracted from the AL NAEEM website.
+Production admin application for AL NAEEM Gaming Store.
+
+**Target domain:** `admin.alnaeem.com`
 
 ## Stack
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- Local SQLite prototype data layer for current development
+- Next.js 16 App Router · React 19 · TypeScript
+- Service layer with SQLite dev adapter (future: `al-naeem-api`)
 
 ## Requirements
 
-- Node.js 22.13 or newer
+- Node.js 22.13+
 - npm
 
 ## Setup
 
 ```bash
 npm install
-Copy-Item .env.example .env.local
+copy .env.example .env.local   # Windows
 npm run db:init
 npm run db:seed
 ```
 
-Fill only the environment variables you actually use. Do not commit `.env.local`.
+Set `ADMIN_DEV_BYPASS=true` in `.env.local` for local development without cookie auth.
 
 ## Development
 
@@ -31,11 +31,9 @@ Fill only the environment variables you actually use. Do not commit `.env.local`
 npm run dev
 ```
 
-Local URL: `http://localhost:3001`
+Open: **http://localhost:3001**
 
-The admin route currently remains at `/admin` inside this standalone app, so the dashboard URL is `http://localhost:3001/admin`.
-
-## Build
+## Quality
 
 ```bash
 npm run lint
@@ -43,14 +41,12 @@ npm run typecheck
 npm run build
 ```
 
-## Architecture
+## Documentation
 
-- `app/admin` contains the admin routes and server actions.
-- `components/admin` contains admin UI and forms.
-- `lib/database` contains the current local SQLite repository.
-- `lib/api.ts` is the future backend API base layer.
-- `public/uploads/products` stores local product images used by the prototype admin.
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — layers, routing, data strategy
+- [ADMIN_SYSTEM.md](./ADMIN_SYSTEM.md) — module status
+- [DECISIONS.md](./DECISIONS.md) — frozen technical decisions
 
-## Planned Backend
+## Future Backend
 
-The next phase can replace direct local SQLite calls with an `al-naeem-api` service backed by PostgreSQL. Keep production URLs centralized behind `API_BASE_URL` or the API service layer.
+Replace SQLite adapter with HTTP adapter pointing to `al-naeem-api`. UI and routes remain unchanged.

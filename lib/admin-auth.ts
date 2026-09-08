@@ -1,5 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import { cookies } from 'next/headers';
+import { isAdminDevBypassEnabled } from '@/lib/config/env';
 
 const ADMIN_COOKIE = 'al-naeem-admin-session';
 
@@ -12,6 +13,7 @@ function matchesSecret(value: string | undefined, expected: string | undefined):
 
 /** Deny privileged access unless a future auth layer provides this server-only session token. */
 export async function isAdminRequest(): Promise<boolean> {
+  if (isAdminDevBypassEnabled()) return true;
   const token = (await cookies()).get(ADMIN_COOKIE)?.value;
   return matchesSecret(token, process.env.AL_NAEEM_ADMIN_SESSION_TOKEN);
 }

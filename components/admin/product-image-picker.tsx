@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ImagePlus, Loader2, RefreshCcw, Sparkles, Upload } from 'lucide-react';
-import { fetchProductImageCandidates, storeRemoteImage, storeProcessedImage } from '@/app/admin/actions';
+import { fetchProductImageCandidates, storeRemoteImage, storeProcessedImage } from '@/app/actions';
 import { ProductImageCropper, type CroppedImage } from './product-image-cropper';
 
 type Candidate = { title: string; imageUrl: string; thumbnailUrl?: string; width?: number; height?: number; source?: string; domain?: string; sourcePage?: string };

@@ -4,11 +4,16 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
-  // Static export removed: the admin system requires server actions, API routes
-  // (image search proxy, WhatsApp webhook) and the local SQLite repository.
-  // Storefront pages remain static-friendly server components.
   images: {
     unoptimized: true,
+  },
+  async redirects() {
+    return [
+      { source: '/admin', destination: '/', permanent: false },
+      { source: '/admin/:path*', destination: '/:path*', permanent: false },
+      { source: '/clients', destination: '/customers', permanent: false },
+      { source: '/clients/:path*', destination: '/customers/:path*', permanent: false },
+    ];
   },
 };
 

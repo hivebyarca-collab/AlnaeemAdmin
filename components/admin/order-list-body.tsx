@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getOrderCounts, listOrders } from '@/lib/database';
+import type { OrderListResult, OrderCounts } from '@/services/repositories/order.repository';
 
 type StatusLabels = Record<string, { label: string; className: string }>;
 
@@ -7,8 +7,8 @@ type StatusLabels = Record<string, { label: string; className: string }>;
 export function OrderListBody({
   data, counts, filters, source, totalPages, statusLabels, paymentLabels, sourceLabels,
 }: {
-  data: Awaited<ReturnType<typeof listOrders>>;
-  counts: Awaited<ReturnType<typeof getOrderCounts>>;
+  data: OrderListResult;
+  counts: OrderCounts;
   filters: Record<string, string | undefined>;
   source: string;
   totalPages: number;
@@ -21,7 +21,7 @@ export function OrderListBody({
     for (const [key, value] of Object.entries({ ...filters, ...extra })) {
       if (value) parameters.set(key, value);
     }
-    return `/admin/orders?${parameters.toString()}`;
+    return `/orders?${parameters.toString()}`;
   };
   return (
     <>
@@ -68,7 +68,7 @@ export function OrderListBody({
               <tbody>
                 {data.rows.map((order) => (
                   <tr key={order.id}>
-                    <td dir="ltr"><Link href={`/admin/orders/${order.id}`}>#{order.id.slice(0, 8)}</Link></td>
+                    <td dir="ltr"><Link href={`/orders/${order.id}`}>#{order.id.slice(0, 8)}</Link></td>
                     <td><span className={`badge badge--source-${order.source}`}>{sourceLabels[order.source] ?? order.source}</span></td>
                     <td>{order.contact_name}<small dir="ltr" className="admin-cell-sub">{order.contact_phone}</small></td>
                     <td>
@@ -79,7 +79,7 @@ export function OrderListBody({
                     <td><span className={`badge ${paymentLabels[order.payment_status]?.className}`}>{paymentLabels[order.payment_status]?.label ?? order.payment_status}</span></td>
                     <td><span className={`badge ${statusLabels[order.status]?.className}`}>{statusLabels[order.status]?.label ?? order.status}</span></td>
                     <td dir="ltr">{order.created_at.slice(0, 16).replace('T', ' ')}</td>
-                    <td><Link href={`/admin/orders/${order.id}`} className="admin-row-btn" aria-label={`عرض الطلب ${order.id}`}>عرض ←</Link></td>
+                    <td><Link href={`/orders/${order.id}`} className="admin-row-btn" aria-label={`عرض الطلب ${order.id}`}>عرض ←</Link></td>
                   </tr>
                 ))}
               </tbody>

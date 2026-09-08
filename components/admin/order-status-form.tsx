@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Save } from 'lucide-react';
-import { updateOrderDetails } from '@/app/admin/actions';
+import { updateOrderDetails } from '@/app/actions';
 
 const statuses = [
   { value: 'SUBMITTED', label: 'جديد' }, { value: 'CONFIRMED', label: 'مؤكد' }, { value: 'PREPARING', label: 'قيد التجهيز' },

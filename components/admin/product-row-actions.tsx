@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Copy, Eye, EyeOff, Loader2, RefreshCcw, Trash2 } from 'lucide-react';
-import { removeProduct, setProductActive } from '@/app/admin/actions';
+import { removeProduct, setProductActive } from '@/app/actions';
 
 /** Row actions for the product list. Destructive actions always confirm first. */
 export function ProductRowActions({ id, sku, isActive, hasImage }: { id: string; sku: string; isActive: boolean; hasImage: boolean }) {
@@ -21,10 +21,10 @@ export function ProductRowActions({ id, sku, isActive, hasImage }: { id: string;
   }
 
   async function duplicate() {
-    const response = await fetch(`/api/admin/products/${id}/duplicate`, { method: 'POST' });
+    const response = await fetch(`/api/products/${id}/duplicate`, { method: 'POST' });
     if (response.ok) {
       const data = (await response.json()) as { id?: string };
-      router.push(data.id ? `/admin/products/${data.id}` : '/admin/products');
+      router.push(data.id ? `/products/${data.id}` : '/products');
     } else {
       setError('تعذر نسخ المنتج');
     }
@@ -32,7 +32,7 @@ export function ProductRowActions({ id, sku, isActive, hasImage }: { id: string;
 
   return (
     <div className="admin-row-actions">
-      <a className="admin-row-btn" href={`/admin/products/${id}`} aria-label={`تعديل ${sku}`}>تعديل</a>
+      <a className="admin-row-btn" href={`/products/${id}`} aria-label={`تعديل ${sku}`}>تعديل</a>
       <button type="button" className="admin-row-btn" onClick={() => void duplicate()} disabled={pending} aria-label={`نسخ ${sku}`}><Copy aria-hidden="true" /> نسخ</button>
       <button
         type="button" className="admin-row-btn" disabled={pending}
@@ -42,7 +42,7 @@ export function ProductRowActions({ id, sku, isActive, hasImage }: { id: string;
         {isActive ? <><EyeOff aria-hidden="true" /> إخفاء</> : <><Eye aria-hidden="true" /> إظهار</>}
       </button>
       {!hasImage && (
-        <a className="admin-row-btn" href={`/admin/products/${id}`} aria-label={`جلب صورة جديدة لـ ${sku}`}><RefreshCcw aria-hidden="true" /> صورة جديدة</a>
+        <a className="admin-row-btn" href={`/products/${id}`} aria-label={`جلب صورة جديدة لـ ${sku}`}><RefreshCcw aria-hidden="true" /> صورة جديدة</a>
       )}
       <button
         type="button" className="admin-row-btn admin-row-btn--danger" disabled={pending}

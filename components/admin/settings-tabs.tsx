@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Save } from 'lucide-react';
-import { saveAdminSettings } from '@/app/admin/actions';
+import { saveAdminSettings } from '@/app/actions';
 
 const tabs = [
   { id: 'whatsapp', label: 'واتساب' }, { id: 'store', label: 'المتجر' }, { id: 'website', label: 'الموقع' },
@@ -218,8 +218,8 @@ function OtherPanels({ tab, values, set, saveButton, users }: {
     <section className="admin-panel" aria-label="الأمان">
       <header className="admin-panel-title"><h2>الأمان</h2></header>
       <p className="admin-callout admin-callout--warn">
-        المصادقة الحالية نظام تطوير (<code dir="ltr">lib/database/dev-auth.ts</code>) بدون جلسات أو كلمات مرور.
-        كل الإجراءات الخطرة تُنفَّذ عبر Server Actions على الخادم. عند النشر يجب استبدال نظام التطوير بمصادقة حقيقية وتقييد <code dir="ltr">/admin</code> بجلسات موثقة (RBAC مستقبلي).
+        المصادقة الحالية تعتمد على <code dir="ltr">AL_NAEEM_ADMIN_SESSION_TOKEN</code> أو <code dir="ltr">ADMIN_DEV_BYPASS=true</code> للتطوير فقط.
+        كل الإجراءات الخطرة تُنفَّذ عبر Server Actions على الخادم. عند النشر يجب استبدال نظام التطوير بمصادقة حقيقية عبر AL NAEEM API وتقييد لوحة التحكم بجلسات موثقة (RBAC مستقبلي).
       </p>
       <ul className="admin-status-list">
         <li><span>أسرار واتساب / Serper / AI</span><span className="badge badge--active" dir="ltr">SERVER-ONLY</span></li>
