@@ -11,6 +11,22 @@ export type AdminSessionUser = {
   role: string;
 };
 
+/** Roles allowed into Admin. CUSTOMER (and unknown roles) are denied. */
+const PRIVILEGED_ROLES = new Set([
+  'owner',
+  'admin',
+  'staff',
+  'administrator',
+  'manager',
+]);
+
+function isPrivilegedRole(role: string | undefined): boolean {
+  if (!role) return false;
+  const normalized = role.trim().toLowerCase();
+  if (normalized === 'customer' || normalized === 'user') return false;
+  return PRIVILEGED_ROLES.has(normalized);
+}
+
 function matchesSecret(value: string | undefined, expected: string | undefined): boolean {
   if (!value || !expected) return false;
   const actualBytes = Buffer.from(value);
@@ -26,7 +42,9 @@ export async function getAdminSession(): Promise<AdminSessionUser | null> {
 
   if (getDataAdapter() === 'api') {
     try {
-      return await apiData<AdminSessionUser>('/auth/me');
+      const user = await apiData<AdminSessionUser>('/auth/me');
+      if (!user || !isPrivilegedRole(user.role)) return null;
+      return user;
     } catch (error) {
       if (error instanceof ApiClientError && (error.isUnauthorized || error.isForbidden)) {
         return null;

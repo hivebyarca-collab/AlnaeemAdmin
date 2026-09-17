@@ -77,7 +77,11 @@ export async function loginAction(email: string, password: string): Promise<Auth
     await mirrorSessionCookie(token);
 
     const user = (json as ApiEnvelope<AdminSessionUser> | null)?.data;
-    return { ok: true, user: user ?? undefined };
+    if (!user) {
+      await mirrorSessionCookie(null);
+      return { ok: false, error: 'لم يُرجع الخادم مستخدم إدارة صالح' };
+    }
+    return { ok: true, user };
   } catch {
     return { ok: false, error: 'تعذر الاتصال بالخادم — تحقق من تشغيل API على المنفذ 4000' };
   }

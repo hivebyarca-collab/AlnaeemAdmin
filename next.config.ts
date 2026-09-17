@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Keep Node built-ins on the server; do not polyfill into the browser bundle.
+  serverExternalPackages: [],
   async redirects() {
     return [
       { source: '/admin', destination: '/', permanent: false },

@@ -10,6 +10,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
 # local environment
 .env*
@@ -19,6 +20,9 @@ yarn-error.log*
 next-env.d.ts
 *.tsbuildinfo
 /data/local/
+/coverage
+/dist
+.vercel
 
 # misc
 .DS_Store

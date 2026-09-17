@@ -40,7 +40,7 @@ async function api(path, init = {}, cookie) {
   return { res, json, text };
 }
 
-async function adminPage(path, cookie, expectRedirect = false) {
+async function adminPage(path, cookie, _expectRedirect = false) {
   const res = await fetch(`${ADMIN}${path}`, {
     headers: cookie ? { Cookie: `al-naeem-admin-session=${cookie}` } : {},
     redirect: 'manual',

@@ -1,4 +1,4 @@
-/** Domain types shared by services, UI, and future API adapters. */
+/** Domain types shared by services, UI, and API adapters — no Node/SQLite coupling. */
 export type {
   Product,
   ProductInput,
@@ -12,19 +12,9 @@ export type {
   DashboardStats,
   ClientRow as CustomerRow,
   OrderInput,
-} from '@/lib/database';
-
-export type Category = { id: string; name_ar: string; name_en: string };
-export type Brand = { id: string; name: string };
-
-export type CustomerDetail = {
-  user: import('@/lib/database').User & { notes?: string | null; is_disabled?: number };
-  orders: import('@/lib/database').Order[];
-  conversation: import('@/lib/database').Conversation | undefined;
-  messages: unknown[];
-  totalSpentUsd: number;
-  addresses: unknown[];
-};
-
-export type Conversation = import('@/lib/database').Conversation;
-export type AdminUser = Pick<import('@/lib/database').User, 'id' | 'full_name' | 'email' | 'role' | 'status'>;
+  Category,
+  Brand,
+  CustomerDetail,
+  Conversation,
+  AdminUser,
+} from './domain';

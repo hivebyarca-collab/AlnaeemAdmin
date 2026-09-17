@@ -12,6 +12,11 @@ import { randomUUID } from 'node:crypto';
 const UPLOAD_ROOT = path.join(process.cwd(), 'public', 'uploads', 'products');
 
 export async function saveProductImage(bytes: Uint8Array, extension = 'webp'): Promise<{ path: string }> {
+  if (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'Local disk product image uploads are not available on Vercel. Use object storage via the shared AL NAEEM API / Railway later.',
+    );
+  }
   mkdirSync(UPLOAD_ROOT, { recursive: true });
   const fileName = `${randomUUID()}.${extension}`;
   await writeFile(path.join(UPLOAD_ROOT, fileName), bytes);

@@ -14,6 +14,10 @@ import {
   sqliteSettingsRepository,
 } from './adapters/sqlite/catalog.repository';
 
+/**
+ * Production / Vercel always selects the API adapters (see getDataAdapter).
+ * SQLite modules remain in the repo for local development only and must never be called on Vercel.
+ */
 const useApi = getDataAdapter() === 'api';
 
 export const catalogService = useApi ? apiCatalogRepository : sqliteCatalogRepository;
