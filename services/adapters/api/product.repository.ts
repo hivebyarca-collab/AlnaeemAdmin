@@ -1,4 +1,5 @@
 import { apiData, apiFetch, type ApiCollection } from '@/lib/api/client';
+import { ApiClientError } from '@/lib/api/errors';
 import {
   filterProductsClientSide,
   mapProductFiltersToQuery,
@@ -45,8 +46,9 @@ export const apiProductRepository: ProductRepository = {
     try {
       const product = await apiData<ApiProduct>(`/products/${id}`);
       return mapProductFromApi(product);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (error instanceof ApiClientError && error.isNotFound) return undefined;
+      throw error;
     }
   },
 
@@ -76,8 +78,9 @@ export const apiProductRepository: ProductRepository = {
         body: JSON.stringify(body),
       });
       return mapProductFromApi(product);
-    } catch {
-      return undefined;
+    } catch (error) {
+      if (error instanceof ApiClientError && error.isNotFound) return undefined;
+      throw error;
     }
   },
 

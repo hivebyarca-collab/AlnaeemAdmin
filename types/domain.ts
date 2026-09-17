@@ -24,6 +24,8 @@ export type Product = {
   low_stock_threshold: number;
   is_active: number;
   is_demo: number;
+  brand_label?: string;
+  category_label?: string;
   compatibility_type: string | null;
   specs_json: string;
   external_ref: string | null;

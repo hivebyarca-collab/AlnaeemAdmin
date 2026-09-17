@@ -21,8 +21,8 @@ export type ActionResult = { ok: boolean; error?: string; message?: string };
 export type ProductFormValues = {
   id?: string; name: string; brand: string; model: string; sku: string; category: string;
   price: string; costPrice?: string; quantity: string; lowStockThreshold: string; description: string;
-  isActive: boolean; barcode?: string | null; imagePath?: string | null; imageSourceUrl?: string | null;
-  imageSourceDomain?: string | null; imageWidth?: number | null; imageHeight?: number | null;
+  specifications?: string; isActive: boolean; barcode?: string | null; imagePath?: string | null;
+  imageSourceUrl?: string | null; imageSourceDomain?: string | null; imageWidth?: number | null; imageHeight?: number | null;
 };
 
 const SETTINGS_ALLOWLIST = new Set([
@@ -57,9 +57,33 @@ export async function saveProduct(values: ProductFormValues): Promise<ActionResu
     const existingProduct = values.id ? await productService.getProduct(values.id) : undefined;
     const brandId = values.brand.trim();
     const categoryId = values.category.trim();
+    let specsJson = existingProduct?.specs_json ?? '{}';
+    if (values.specifications !== undefined) {
+      const raw = values.specifications.trim();
+      if (!raw) {
+        specsJson = '{}';
+      } else {
+        try {
+          const parsed = JSON.parse(raw) as unknown;
+          if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+            return { ok: false, error: 'المواصفات يجب أن تكون كائن JSON' };
+          }
+          specsJson = JSON.stringify(parsed);
+        } catch {
+          const specs: Record<string, string> = {};
+          for (const line of raw.split('\n')) {
+            const separator = line.includes(':') ? ':' : '=';
+            const index = line.indexOf(separator);
+            if (index > 0) specs[line.slice(0, index).trim()] = line.slice(index + 1).trim();
+          }
+          if (!Object.keys(specs).length) return { ok: false, error: 'تعذر قراءة المواصفات. استخدم JSON أو أسطر المفتاح:القيمة' };
+          specsJson = JSON.stringify(specs);
+        }
+      }
+    }
     const base: ProductInput = {
       sku,
-      slug: slugifyAscii(`${brandId.slice(0, 8)}-${name}-${sku}`),
+      slug: existingProduct?.slug || slugifyAscii(`${name}-${sku}`.replace(/[\u0600-\u06FF]/g, '')) || `product-${sku.toLowerCase()}`,
       category: categoryId,
       subcategory: categoryId,
       brand: brandId,
@@ -75,7 +99,7 @@ export async function saveProduct(values: ProductFormValues): Promise<ActionResu
       reserved_quantity: existingProduct?.reserved_quantity ?? 0,
       low_stock_threshold: threshold,
       is_active: values.isActive ? 1 : 0,
-      specs_json: existingProduct?.specs_json ?? '{}',
+      specs_json: specsJson,
       sync_status: existingProduct?.sync_status ?? 'MANUAL',
       compatibility_type: existingProduct?.compatibility_type ?? null,
       external_ref: existingProduct?.external_ref ?? null,
@@ -95,6 +119,7 @@ export async function saveProduct(values: ProductFormValues): Promise<ActionResu
       image_width: values.imageWidth ?? null, image_height: values.imageHeight ?? null,
     });
     revalidatePath('/products');
+    revalidatePath(`/products/${productId}`);
     revalidatePath('/');
     return { ok: true, message: values.id ? 'تم تحديث المنتج' : 'تم إضافة المنتج بنجاح' };
   } catch (error) {
@@ -108,6 +133,8 @@ export async function setProductActive(id: string, isActive: boolean): Promise<A
     const updated = await productService.updateProduct(id, { is_active: isActive ? 1 : 0 });
     if (!updated) return { ok: false, error: 'المنتج غير موجود' };
     revalidatePath('/products');
+    revalidatePath(`/products/${id}`);
+    revalidatePath('/');
     return { ok: true, message: isActive ? 'تم إظهار المنتج' : 'تم إخفاء المنتج' };
   } catch (error) {
     return { ok: false, error: toActionError(error) };

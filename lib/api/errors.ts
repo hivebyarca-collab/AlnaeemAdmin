@@ -53,7 +53,7 @@ export function toActionError(error: unknown): string {
     if (error.isNotFound) return 'العنصر غير موجود';
     if (error.isConflict) return error.message || 'تعذر الحذف بسبب ارتباطات موجودة';
     if (error.isRateLimited) return 'محاولات كثيرة — حاول لاحقاً';
-    if (error.isNetwork) return 'تعذر الاتصال بالخادم — تحقق من تشغيل API';
+    if (error.isNetwork) return 'تعذر الاتصال بالخادم. تحقق من API_BASE_URL ثم أعد المحاولة.';
     if (error.isValidation) return error.message || 'بيانات غير صالحة';
     return error.message;
   }

@@ -83,7 +83,7 @@ export async function loginAction(email: string, password: string): Promise<Auth
     }
     return { ok: true, user };
   } catch {
-    return { ok: false, error: 'تعذر الاتصال بالخادم — تحقق من تشغيل API على المنفذ 4000' };
+    return { ok: false, error: 'تعذر الاتصال بالخادم. تحقق من API_BASE_URL ثم أعد المحاولة.' };
   }
 }
 

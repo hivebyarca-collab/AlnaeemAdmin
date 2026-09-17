@@ -11,7 +11,7 @@ export type ProductFormInitial = Partial<ProductFormValues> & { id?: string; cat
 
 const emptyValues = {
   name: '', brand: '', model: '', sku: '', category: '', price: '', costPrice: '',
-  quantity: '0', lowStockThreshold: '2', description: '', isActive: true,
+  quantity: '0', lowStockThreshold: '2', description: '', specifications: '', isActive: true,
 };
 
 export function ProductForm({
@@ -107,6 +107,16 @@ export function ProductForm({
               <label className="admin-field-full">الوصف
                 <textarea rows={4} maxLength={1000} value={values.description} onChange={(event) => setValues({ ...values, description: event.target.value })} />
                 <small dir="ltr">{values.description.length}/1000</small>
+              </label>
+              <label className="admin-field-full">المواصفات
+                <textarea
+                  dir="ltr"
+                  rows={5}
+                  value={values.specifications}
+                  onChange={(event) => setValues({ ...values, specifications: event.target.value })}
+                  placeholder='{"vram":"12GB","socket":"AM5"}'
+                />
+                <small>JSON أو أسطر المفتاح:القيمة. تظهر في صفحة المنتج في المتجر.</small>
               </label>
               <label className="admin-switch">
                 <input type="checkbox" checked={values.isActive} onChange={(event) => setValues({ ...values, isActive: event.target.checked })} />

@@ -4,6 +4,7 @@ import { Plus, Search } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { ProductRowActions } from '@/components/admin/product-row-actions';
 import { catalogService, productService } from '@/services';
+import { toActionError } from '@/lib/api/errors';
 
 export const metadata = { title: 'قائمة المنتجات' };
 
@@ -15,6 +16,7 @@ export default async function ProductListPage({ searchParams }: { searchParams: 
   let categories: Awaited<ReturnType<typeof catalogService.getCategories>> = [];
   let brands: Awaited<ReturnType<typeof catalogService.getBrands>> = [];
   let dbError = false;
+  let errorMessage = 'تعذر الاتصال بواجهة البرمجة. تحقق من API_BASE_URL ثم أعد المحاولة.';
   try {
     data = await productService.listProducts({
       query: filters.q, category: filters.category, brand: filters.brand,
@@ -23,12 +25,13 @@ export default async function ProductListPage({ searchParams }: { searchParams: 
     });
     categories = await catalogService.getCategories();
     brands = await catalogService.getBrands();
-  } catch {
+  } catch (error) {
     dbError = true;
+    errorMessage = toActionError(error);
   }
 
   if (dbError || !data) {
-    return <div className="admin-empty" role="alert"><h2>تعذر تحميل المنتجات</h2><p>تأكد من تهيئة قاعدة البيانات المحلية ثم أعد المحاولة.</p></div>;
+    return <div className="admin-empty" role="alert"><h2>تعذر تحميل المنتجات</h2><p>{errorMessage}</p></div>;
   }
 
   const totalPages = Math.max(Math.ceil(data.total / data.pageSize), 1);
@@ -92,7 +95,7 @@ export default async function ProductListPage({ searchParams }: { searchParams: 
                           : <span className="admin-table-thumb admin-table-thumb--empty" aria-hidden="true" />}
                       </td>
                       <td><Link href={`/products/${product.id}`} className="admin-table-title">{product.name}</Link></td>
-                      <td dir="ltr">{product.brand} {product.model}</td>
+                      <td dir="ltr">{product.brand_label ?? product.brand} {product.model}</td>
                       <td dir="ltr">{product.sku}</td>
                       <td dir="ltr">${(product.price_usd ?? 0).toLocaleString('en-US')}</td>
                       <td>{stockPill(available, product.low_stock_threshold)}</td>
