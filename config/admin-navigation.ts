@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   Boxes,
+  ClipboardList,
   FolderTree,
   Home,
   Image,
@@ -47,6 +48,7 @@ export const adminNavigation: NavSection[] = [
     title: 'المبيعات',
     items: [
       { label: 'الطلبات', href: '/orders', icon: ShoppingBag, matchPrefix: true },
+      { label: 'طلبات الخدمة', href: '/requests', icon: ClipboardList, matchPrefix: true },
       { label: 'العملاء', href: '/customers', icon: UsersRound, matchPrefix: true },
     ],
   },

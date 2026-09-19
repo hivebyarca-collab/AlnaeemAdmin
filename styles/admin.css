@@ -366,6 +366,29 @@ dialog.drawer-panel.drawer-panel--right { left: auto; right: 0; }
 .badge--status-READY { border-color: #b07cff; color: #b07cff; }
 .badge--status-COMPLETED { border-color: rgb(31 211 107 / 60%); color: var(--success); }
 .badge--status-CANCELLED { border-color: color-mix(in srgb, var(--accent) 60%, transparent); color: var(--accent); }
+.badge--status-new { border-color: #5aa2ff; color: #5aa2ff; }
+.badge--status-reviewing { border-color: #ffb020; color: #ffb020; }
+.badge--status-sent-to-office { border-color: #b07cff; color: #b07cff; }
+.badge--status-contacted { border-color: #5aa2ff; color: #5aa2ff; }
+.badge--status-in-progress { border-color: #ffb020; color: #ffb020; }
+.badge--status-completed { border-color: rgb(31 211 107 / 60%); color: var(--success); }
+.badge--status-cancelled { border-color: color-mix(in srgb, var(--accent) 60%, transparent); color: var(--accent); }
+.admin-request-detail { display: grid; gap: 13px; padding: 0 17px 24px; }
+.admin-request-card { padding: 16px; }
+.admin-request-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+.admin-request-rows { display: grid; gap: 8px; margin: 0; }
+.admin-request-row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
+.admin-request-row dt { color: var(--text-muted); font-size: .72rem; }
+.admin-request-row dd { margin: 0; color: var(--text); }
+.admin-request-total { margin: 12px 0 0; }
+.admin-request-actions, .admin-request-notes { display: grid; gap: 10px; margin-bottom: 14px; }
+.admin-request-actions select, .admin-request-notes textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); }
+.admin-request-feedback { margin: 0; font-size: .8rem; }
+.admin-request-feedback.is-ok { color: var(--success); }
+.admin-request-feedback.is-error { color: var(--accent); }
+.admin-request-timeline { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.admin-request-timeline li { display: grid; gap: 2px; }
+.admin-request-timeline small { color: var(--text-muted); }
 .badge--source-website { border-color: #5aa2ff; color: #5aa2ff; }
 .badge--source-whatsapp, .badge--whatsapp { border-color: rgb(31 211 107 / 60%); color: var(--success); }
 .badge--source-manual, .badge--source-both { border-color: var(--border-strong); color: var(--text-secondary); }
