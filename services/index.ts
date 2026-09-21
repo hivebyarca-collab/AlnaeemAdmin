@@ -29,3 +29,5 @@ export const conversationService = useApi ? apiConversationRepository : sqliteCo
 export { productService } from './product.service';
 export { orderService } from './order.service';
 export { customerService } from './customer.service';
+export * as promotionApi from './adapters/api/promotion.repository';
+export * as bannerApi from './adapters/api/banner.repository';

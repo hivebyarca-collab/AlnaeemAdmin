@@ -378,3 +378,104 @@ export async function storeProcessedImage(bytes: number[], sourceMeta: { sourceU
     return { ok: false, error: 'تعذر حفظ الصورة في التخزين' };
   }
 }
+
+export async function savePromotionAction(input: {
+  productId: string;
+  type: 'PERCENTAGE' | 'FIXED_AMOUNT';
+  percentage?: number | null;
+  salePriceMinor?: number | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  enabled?: boolean;
+  showOnHomepage?: boolean;
+  priority?: number;
+}): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const { savePromotion } = await import('@/services/adapters/api/promotion.repository');
+    await savePromotion(input);
+    revalidatePath('/promotions');
+    return { ok: true, message: 'تم حفظ العرض' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
+
+export async function promotionCommandAction(id: string, action: 'enable' | 'disable' | 'end' | 'extend'): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const { promotionAction } = await import('@/services/adapters/api/promotion.repository');
+    await promotionAction(id, action);
+    revalidatePath('/promotions');
+    return { ok: true, message: 'تم تحديث العرض' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
+
+export async function saveBannerAction(input: {
+  id?: string;
+  title: string;
+  imageUrl: string;
+  imageUrlLight?: string | null;
+  link?: string | null;
+  placement: 'HERO' | 'PROMO';
+  active?: boolean;
+  position?: number;
+  altText?: string | null;
+  key?: string | null;
+}): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const { saveBanner, updateBanner } = await import('@/services/adapters/api/banner.repository');
+    if (input.id) {
+      const { id, ...body } = input;
+      await updateBanner(id, body);
+    } else {
+      await saveBanner(input);
+    }
+    revalidatePath('/website');
+    return { ok: true, message: 'تم حفظ البانر' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
+
+export async function toggleBannerAction(id: string, active: boolean): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const { updateBanner } = await import('@/services/adapters/api/banner.repository');
+    await updateBanner(id, { active });
+    revalidatePath('/website');
+    return { ok: true, message: active ? 'تم تفعيل البانر' : 'تم إيقاف البانر' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
+
+export async function reorderBannersAction(ids: string[]): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const { reorderBanners } = await import('@/services/adapters/api/banner.repository');
+    await reorderBanners(ids);
+    revalidatePath('/website');
+    return { ok: true, message: 'تم ترتيب البانرات' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
+
+export async function uploadBannerImageAction(input: {
+  filename: string;
+  contentType: 'image/jpeg' | 'image/png' | 'image/webp';
+  dataBase64: string;
+}): Promise<ActionResult & { url?: string }> {
+  try {
+    await requireAdmin();
+    const { uploadBannerImage } = await import('@/services/adapters/api/banner.repository');
+    const stored = await uploadBannerImage(input);
+    return { ok: true, url: stored.url, message: 'تم رفع الصورة' };
+  } catch (error) {
+    return { ok: false, error: toActionError(error) };
+  }
+}
